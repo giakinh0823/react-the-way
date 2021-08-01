@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { formatPrice } from '../../../utils';
+import { useDispatch } from 'react-redux';
+import { addToCart, showMiniCart } from '../../cart/CartSlice';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,38 +47,55 @@ Product.defaultProps = {
 };
 
 function Product(props) {
-    const { product, category, service,sizes } = props;
+    const { product, category, service, sizes } = props;
     const classes = useStyles();
     const history = useHistory();
     const handleClick = () => {
         history.push(`/products/${product.id}`)
-    }    
+    }
+
+    const dispatch = useDispatch()
+
+    const handleAddToCart = () => {
+        const action = addToCart({
+            id: product.id,
+            product: product,
+            quantity: 1, 
+            size: "M",
+        });
+        const showMiniCartMini = showMiniCart(true)
+        dispatch(action)
+        dispatch(showMiniCartMini)
+    }
+
     return (
-        <Box className={classes.root} onClick={handleClick}>
+        <Box className={classes.root}>
             <CardContent>
-                <Box>
-                    <img src={product.image} alt={product.title} width="100%" />
+                <Box onClick={handleClick}>
+                    <Box>
+                        <img src={product.image} alt={product.title} width="100%" />
+                    </Box>
+                    <Typography className={classes.text}>
+                        {service?.name}
+                    </Typography>
+                    <Typography variant="h6" component="h6" className={classes.title}>
+                        {product.title}
+                    </Typography>
+                    <Typography className={classes.text}>
+                        {product?.size.map((item, index) => (
+                            <Box key={index} component={"span"} pr={1} fontSize={12}>
+                                {sizes[sizes.findIndex((x) => x.id === item)]?.name}
+                            </Box>
+                        ))}
+                    </Typography>
+                    <Typography className={classes.text}>
+                        {category?.name}
+                    </Typography>
+                    <Typography className={classes.price}>
+                        {formatPrice(product?.price)}
+                    </Typography>
                 </Box>
-                <Typography className={classes.text}>
-                    {service?.name}
-                </Typography>
-                <Typography variant="h6" component="h6" className={classes.title}>
-                    {product.title}
-                </Typography>
-                <Typography className={classes.text}>
-                    {product?.size.map((item, index) => (
-                        <Box key={index} component={"span"} pr={1} fontSize={12}>
-                            {sizes[sizes.findIndex((x) => x.id === item)]?.name}
-                        </Box>
-                    ))}
-                </Typography>
-                <Typography className={classes.text}>
-                    {category?.name}
-                </Typography>
-                <Typography className={classes.price}>
-                    {formatPrice(product?.price)}
-                </Typography>
-                <Button size="small" className={classes.button}>By now</Button>
+                <Button size="small" className={classes.button} onClick={handleAddToCart}>By now</Button>
             </CardContent>
         </Box>
     );

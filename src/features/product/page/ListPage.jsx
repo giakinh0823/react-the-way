@@ -132,12 +132,12 @@ function ListPage(props) {
     return (
         <Container maxWidth="lg" className={classes.root}>
             <Grid container spacing={1}>
-                <Grid item xs={3} >
+                <Grid item md={3} >
                     <Paper elevation={0} className={classes.section}>
                         <ProductFilter categorys={categorys} filters={queryParams} services={services} onChange={handleFilter} sizes={sizes} />
                     </Paper>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item md={9}>
                     <Paper elevation={0} className={classes.section}>
                         <ProductServices filters={queryParams} options={optionsServices} onChange={handleFilter} />
                         <Box className={classes.filter}>
